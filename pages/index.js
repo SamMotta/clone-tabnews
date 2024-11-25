@@ -1,6 +1,9 @@
 function Home() {
   return (
-    <h1>Elizabete, eu te amo! E se você me ama, manda áudio dizendo que me ama!</h1>
+    <>
+      <h1>Em construção!</h1>
+      <h2>Muito em breve aqui se encontrará o shoptab, trazendo notícias sobre promoções e artigos relacionados a produtos.</h2>
+    </>
   );
 }
 
