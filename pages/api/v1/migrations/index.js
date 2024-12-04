@@ -8,10 +8,17 @@ import { join } from 'node:path';
  * @param {import("next").NextApiResponse} response
  */
 async function status(request, response) {
-  const dbClient = await database.getNewClient();
   const allowedMethods = ['GET', 'POST'];
+  if (!allowedMethods.includes(request.method)) {
+    return response
+      .status(405)
+      .json({ error: `Method ${request.method} Not Allowed` });
+  }
 
-  if (allowedMethods.includes(request.method)) {
+  let dbClient;
+  try {
+    dbClient = await database.getNewClient();
+
     const dryRun = request.method === 'GET';
     const migrations = await migrationsRunner({
       dbClient: dbClient,
@@ -21,16 +28,18 @@ async function status(request, response) {
       verbose: true,
       migrationsTable: 'pgmigrations',
     });
-    await dbClient.end();
 
     if (migrations.length > 0 && !dryRun) {
       return response.status(201).json(migrations);
     }
 
     return response.status(200).json(migrations);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  } finally {
+    await dbClient.end();
   }
-
-  response.status(405).end();
 }
 
 export default status;
