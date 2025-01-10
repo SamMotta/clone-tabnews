@@ -33,7 +33,7 @@
   },
   "devDependencies": {
     "@commitlint/cli": "19.6.1",
-    "@commitlint/config-conventional": "19.2.2",
+    "@commitlint/config-conventional": "19.6.0",
     "@secretlint/secretlint-rule-preset-recommend": "9.0.0",
     "@types/jest": "29.5.14",
     "commitizen": "4.3.1",
