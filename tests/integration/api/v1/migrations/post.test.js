@@ -12,24 +12,36 @@ beforeAll(async () => {
 
 const URI = 'http://localhost:3000';
 
-test('POST to /api/v1/migrations should return 201', async () => {
-  const response1 = await fetch(`${URI}/api/v1/migrations`, { method: 'POST' });
-  const body1 = await response1.json();
+describe('POST /api/v1/migrations', () => {
+  describe('Anonymous user', () => {
+    describe('Retrieving pending migrations', () => {
+      test('For the first time', async () => {
+        const response = await fetch(`${URI}/api/v1/migrations`, {
+          method: 'POST',
+        });
+        const body = await response.json();
 
-  const migrationsCountResult = await database.query(
-    'SELECT COUNT(*)::int FROM pgmigrations'
-  );
-  const migrationsCount = migrationsCountResult.rows[0].count;
+        const migrationsCountResult = await database.query(
+          'SELECT COUNT(*)::int FROM pgmigrations'
+        );
+        const migrationsCount = migrationsCountResult.rows[0].count;
 
-  expect(response1.status).toBe(201);
-  expect(Array.isArray(body1)).toBe(true);
-  expect(migrationsCount).toBeGreaterThan(0);
-  expect(body1.length).toEqual(migrationsCount);
+        expect(response.status).toBe(201);
+        expect(Array.isArray(body)).toBe(true);
+        expect(migrationsCount).toBeGreaterThan(0);
+        expect(body.length).toEqual(migrationsCount);
+      });
 
-  const response2 = await fetch(`${URI}/api/v1/migrations`, { method: 'POST' });
-  const body2 = await response2.json();
+      test('For the second time', async () => {
+        const response = await fetch(`${URI}/api/v1/migrations`, {
+          method: 'POST',
+        });
+        const body = await response.json();
 
-  expect(response2.status).toBe(200);
-  expect(Array.isArray(body2)).toBe(true);
-  expect(body2.length).toEqual(0);
+        expect(response.status).toBe(200);
+        expect(Array.isArray(body)).toBe(true);
+        expect(body.length).toEqual(0);
+      });
+    });
+  });
 });
