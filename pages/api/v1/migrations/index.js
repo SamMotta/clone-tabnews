@@ -1,6 +1,6 @@
 import migrationsRunner from 'node-pg-migrate';
 import database from 'infra/database';
-import { join } from 'node:path';
+import { resolve } from 'node:path';
 
 /**
  *
@@ -23,7 +23,7 @@ async function status(request, response) {
     const migrations = await migrationsRunner({
       dbClient: dbClient,
       dryRun: dryRun,
-      dir: join('infra', 'migrations'),
+      dir: resolve('infra', 'migrations'),
       direction: 'up',
       verbose: true,
       migrationsTable: 'pgmigrations',
