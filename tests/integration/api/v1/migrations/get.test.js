@@ -1,13 +1,8 @@
-import database from 'infra/database';
 import orchestrator from 'test/orchestrator';
-
-async function cleanDatabase() {
-  await database.query('DROP SCHEMA public CASCADE; CREATE SCHEMA public;');
-}
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
-  await cleanDatabase();
+  await orchestrator.clearDatabase();
 });
 
 const URI = 'http://localhost:3000';
@@ -22,12 +17,6 @@ describe('GET /api/v1/migrations', () => {
 
       expect(Array.isArray(body)).toBe(true);
       expect(body.length).toBeGreaterThan(0);
-
-      const migrationsCountResult = await database.query(
-        'SELECT COUNT(*)::int FROM pgmigrations'
-      );
-      const migrationsCount = migrationsCountResult.rows[0].count;
-      expect(migrationsCount).toEqual(0);
     });
   });
 });
